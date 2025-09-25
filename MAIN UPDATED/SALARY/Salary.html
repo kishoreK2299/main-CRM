@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Generator - CRM DASHBOARD</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="salary.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+             <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Admin</span>
+                    </div>
+                    <nav class="main-nav">
+                        <div class="search-container">
+                            <i class="fas fa-search"></i>
+                            <input type="search" class="search-input" placeholder="Search...">
+                        </div>
+                        <a href="../index.html" class="nav-link" data-page="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="../SETTINGSS/setting.html" class="nav-link" data-page="settings">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <a href="Salary.html" class="nav-link active" data-page="salary">
+                            <i class="fas fa-file-invoice-dollar"></i> Salary
+                        </a>
+                    </nav>
+                </div>
+                <div class="header-right">
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationCount">5</span> Notification
+                    </div>
+                    <div class="user-profile">
+                        <img src="../Logo.png" alt="User" class="user-avatar">
+                        <span class="user-name">John Doe</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="form-container">
+                <h3><i class="fas fa-user-edit"></i> Generate Employee Payslip</h3>
+                <div id="payslipForm" class="generator-form">
+                     <div class="form-group">
+                        <label for="empName">Employee Name</label>
+                        <input type="text" id="empName" placeholder="e.g., John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="empId">Employee ID</label>
+                        <input type="text" id="empId" placeholder="e.g., GD-001">
+                    </div>
+                    <div class="form-group">
+                        <label for="empTitle">Title</label>
+                        <input type="text" id="empTitle" placeholder="e.g., Software Engineer">
+                    </div>
+                     <div class="form-group">
+                        <label for="empEmail">Email ID</label>
+                        <input type="email" id="empEmail" placeholder="e.g., john.doe@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="empPan">PAN</label>
+                        <input type="text" id="empPan" placeholder="e.g., ABCDE1234F">
+                    </div>
+                    <div class="form-group">
+                        <label for="empAccount">A/C No.</label>
+                        <input type="text" id="empAccount" placeholder="e.g., 123456789012">
+                    </div>
+                    <div class="form-group">
+                        <label for="workingDays">Working Days in Month</label>
+                        <input type="number" id="workingDays" value="30">
+                    </div>
+                     <div class="form-group">
+                        <label for="lopDays">Loss of Pay Days (LOP)</label>
+                        <input type="number" id="lopDays" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="basicPay">Basic Pay (INR)</label>
+                        <input type="number" id="basicPay" placeholder="e.g., 15000">
+                    </div>
+                    <div class="form-group">
+                        <label for="splAllowance">Special Allowance (INR)</label>
+                        <input type="number" id="splAllowance" placeholder="e.g., 5000">
+                    </div>
+                    <div class="form-group">
+                        <label for="tax">Tax Deduction (INR)</label>
+                        <input type="number" id="tax" placeholder="e.g., 750">
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="button" id="generateBtn">Generate Payslip</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="salary-script.js"></script>
+</body>
+</html>

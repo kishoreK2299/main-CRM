@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice </title>
+    <link rel="stylesheet" href="invoice.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo"><i class="fas fa-chart-line"></i><span>Admin</span></div>
+            <nav class="main-nav">
+                <a href="../MAIN_PAGE/index.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="../SETTINGSS/setting.html" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+                <a href="invoice.html" class="nav-link active"><i class="fas fa-file-invoice"></i> Invoice</a>
+            </nav>
+            <div class="user-profile">
+                <span>John Doe</span><i class="fas fa-chevron-down"></i>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="invoice-generator">
+                <div class="form-container">
+                    <h3 class="form-title"><i class="fas fa-file-invoice-dollar"></i> Generate Domestic Invoice</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Invoice Code</label>
+                            <input type="text" id="invoiceCode" value="GDG240001">
+                        </div>
+                        <div class="form-group">
+                            <label>Invoice Date</label>
+                            <input type="date" id="invoiceDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Client Name</label>
+                            <input type="text" id="clientName" placeholder="Enter client's name">
+                        </div>
+                        <div class="form-group">
+                            <label>Client Company</label>
+                            <input type="text" id="clientCompany" placeholder="Enter company name">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Client Address</label>
+                            <input type="text" id="clientAddress" placeholder="Enter client's full address">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Scope of Project</label>
+                            <input type="text" id="scope" value="Data enrichment services">
+                        </div>
+                        <div class="form-group">
+                            <label>Total Records</label>
+                            <input type="text" id="records" value="10,000">
+                        </div>
+                        <div class="form-group">
+                            <label>Price (USD)</label>
+                            <input type="number" id="price" value="5000">
+                        </div>
+                    </div>
+                    <button type="button" id="generateBtn">Generate Invoice</button>
+                </div>
+            </div>
+
+            <div id="invoice-preview" class="hidden">
+                <div class="invoice-preview-controls">
+                    <button id="createNewBtn"><i class="fas fa-plus"></i> Create New Invoice</button>
+                    <button id="printBtn"><i class="fas fa-print"></i> Print Invoice</button>
+                </div>
+                <div class="invoice-paper">
+                    <header class="invoice-header">
+                        <div class="header-left">
+                            <h1>Global Datasys Group</h1>
+                            <p>1309, Coffeen Avenue, STE 1200<br>Sheridan, Wyoming 82801</p>
+                        </div>
+                        <div class="header-right">
+                            <h2>INVOICE</h2>
+                            <p><strong>Invoice Code:</strong> <span id="preview-invoiceCode"></span></p>
+                            <p><strong>Date:</strong> <span id="preview-invoiceDate"></span></p>
+                        </div>
+                    </header>
+                    <section class="bill-to">
+                        <div class="invoice-from">
+                            <p><strong>INVOICE FROM</strong></p>
+                            <address>
+                                Global Datasys Group<br>
+                                John Kennedy<br>
+                                john@globaldatasysgroup.com
+                            </address>
+                        </div>
+                        <div class="invoice-to">
+                            <p><strong>INVOICE TO</strong></p>
+                            <address>
+                                <strong id="preview-clientName"></strong><br>
+                                <span id="preview-clientCompany"></span><br>
+                                <span id="preview-clientAddress"></span>
+                            </address>
+                        </div>
+                    </section>
+                    <table class="items-table">
+                        <thead><tr><th>SCOPE OF PROJECT</th><th>TOTAL RECORDS</th><th>PRICE (USD)</th></tr></thead>
+                        <tbody><tr>
+                            <td id="preview-scope"></td>
+                            <td id="preview-records"></td>
+                            <td id="preview-price"></td>
+                        </tr></tbody>
+                    </table>
+                    <section class="terms-section">
+                        <div class="terms-block">
+                            <h4>Standard Terms:</h4>
+                            <ul>
+                                <li><strong>Delivery format:</strong> Excel spreadsheet or .CSV</li>
+                                <li><strong>Data Accuracy:</strong> 95% guarantee on email deliverability.</li>
+                                <li><strong>Project Timeline:</strong> 3-5 business days.</li>
+                                <li><strong>Usage Terms:</strong> Unlimited (File for your perpetual usage).</li>
+                            </ul>
+                        </div>
+                        <div class="terms-block">
+                            <h4>PAYMENT DETAILS (DOMESTIC):</h4>
+                            <table>
+                                <tr><td>ACCOUNT NAME</td><td>: Global Datasys Group</td></tr>
+                                <tr><td>ACCOUNT NUMBER</td><td>: 00000000000000</td></tr>
+                                <tr><td>BANK NAME</td><td>: Lorem Ipsum</td></tr>
+                            </table>
+                        </div>
+                    </section>
+                    <footer class="invoice-footer">
+                        <p>Thank you for the business</p>
+                        <div class="signature">Signature</div>
+                    </footer>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="invoice-script.js"></script>
+</body>
+</html>

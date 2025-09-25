@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Login</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Header & Branding -->
+        <div class="login-header">
+            <div class="brand-logo">
+               
+            </div>
+            <p class="welcome-text">Welcome back to your dashboard</p>
+            <p class="tagline">Your CRM, simplified.</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="login-form-container">
+            <form id="loginForm" class="login-form">
+                <h2>Sign In to Your Account</h2>
+                
+                <!-- Email/Username Field -->
+                <div class="form-group">
+                    <label for="username">Email or Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            placeholder="Enter your email or username"
+                            required
+                        >
+                    </div>
+                    <span class="validation-message" id="usernameError"></span>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Enter your password"
+                            required
+                        >
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <span class="validation-message" id="passwordError"></span>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-text">Sign In</span>
+                    <i class="fas fa-spinner fa-spin loading-spinner hidden"></i>
+                </button>
+                <!--Forgot password-->
+                <a href="#" class="forgot-pwd">Forgot password?</a>
+            </form>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management - CRM Pro</title>
+    <link rel="stylesheet" href="contact.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header / Navigation -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <i class="fas fa-chart-line"></i>
+                        <span>CRM Pro</span>
+                    </div>
+                    <nav class="breadcrumb">
+                        <div class="search-container">
+                            <i class="fas fa-search"></i>
+                            <input type="search" class="search-input" placeholder="Search contacts..." onkeyup="performSearch(this.value)">
+                        </div>
+                        <a href="../MAIN_PAGE/index.html" class="breadcrumb-link">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="#" class="breadcrumb-link" onclick="showContactsList()">
+                            <i class="fas fa-address-book"></i> Contacts
+                        </a>
+                    </nav>
+                </div>
+                
+                <div class="header-right">
+                                       
+                    <div class="notifications" onclick="toggleNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>Notification
+                    </div>
+                    
+                    <div class="user-profile" onclick="toggleUserMenu()">
+                        <img src="Logo.png" alt="User" class="user-avatar">
+                        <span class="user-name">John Doe</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contacts List View -->
+        <div class="contacts-list" id="contactsList" style="display: none;">
+            <div class="list-header">
+                <div class="list-controls">
+                    <select class="filter-select" id="statusFilter" onchange="filterContacts()">
+                        <option value="">All Statuses</option>
+                        <option value="Lead">Lead</option>
+                        <option value="Prospect">Prospect</option>
+                        <option value="Customer">Customer</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                    <select class="filter-select" id="ownerFilter" onchange="filterContacts()">
+                        <option value="">All Owners</option>
+                        <option value="John Smith">John Smith</option>
+                        <option value="Sarah Johnson">Sarah Johnson</option>
+                        <option value="Mike Chen">Mike Chen</option>
+                    </select>
+                    <input type="search" class="search-input" placeholder="Search contacts..." onkeyup="searchContacts(this.value)">
+                </div>
+                <div class="list-actions">
+                    <button class="btn-primary" onclick="createContact()">+ Add Contact</button>
+                    <button class="btn-secondary" onclick="exportContacts()">Export</button>
+                </div>
+            </div>
+
+            <table class="contacts-table">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Name <span class="sort-icon">↕</span></th>
+                        <th onclick="sortTable(1)">Company <span class="sort-icon">↕</span></th>
+                        <th onclick="sortTable(2)">Email <span class="sort-icon">↕</span></th>
+                        <th onclick="sortTable(3)">Phone <span class="sort-icon">↕</span></th>
+                        <th onclick="sortTable(4)">Status <span class="sort-icon">↕</span></th>
+                        <th onclick="sortTable(5)">Owner <span class="sort-icon">↕</span></th>
+                        <th onclick="sortTable(6)">Last Activity <span class="sort-icon">↕</span></th>
+                        <th class="actions-col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="contactsTableBody">
+                    <!-- Table content will be populated by JavaScript -->
+                </tbody>
+            </table>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-content">
+                    <h3>No contacts found</h3>
+                    <p>Start by adding your first contact</p>
+                    <button class="btn-primary" onclick="createContact()">+ Add Contact</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Contact Detail/Edit View -->
+        <main class="main-content" id="contactDetail">
+            <!-- Contact Header / Summary -->
+            <section class="contact-header">
+                <div class="contact-summary">
+                    <div class="contact-avatar-section">
+                        <div class="contact-avatar" id="contactAvatar">
+                            <img src="https://via.placeholder.com/120x120/667eea/ffffff?text=SW" alt="Contact" id="avatarImage">
+                            <button class="avatar-upload-btn" onclick="uploadAvatar()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <div class="contact-status-badges">
+                            <span class="status-badge customer" id="contactStatusBadge">Customer</span>
+                            <div class="tag-badges" id="contactTagBadges">
+                                <span class="tag-badge vip">VIP</span>
+                                <span class="tag-badge high-value">High Value</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-basic-info">
+                        <h1 class="contact-name" id="contactFullName">Sarah Wilson</h1>
+                        <p class="contact-title" id="contactJobTitle">Sales Manager</p>
+                        <p class="contact-company">
+                            <a href="#" class="company-link" id="contactCompanyLink">TechCorp Solutions</a>
+                        </p>
+                        <div class="contact-meta">
+                            <span class="contact-owner">
+                                <i class="fas fa-user"></i> Owner: <strong id="contactOwner">John Smith</strong>
+                            </span>
+                            <span class="last-activity">
+                                <i class="fas fa-clock"></i> Last Activity: <strong id="lastActivityDate">2 days ago</strong>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-actions-toolbar">
+                        <button class="action-btn call-btn" onclick="callContact()">
+                            <i class="fas fa-phone"></i> Call Now
+                        </button>
+                        <button class="action-btn email-btn" onclick="emailContact()">
+                            <i class="fas fa-envelope"></i> Send Email
+                        </button>
+                        <button class="action-btn meeting-btn" onclick="scheduleMeeting()">
+                            <i class="fas fa-calendar-plus"></i> Schedule Meeting
+                        </button>
+                        <button class="action-btn note-btn" onclick="addNote()">
+                            <i class="fas fa-sticky-note"></i> Add Note
+                        </button>
+                        <button class="action-btn document-btn" onclick="uploadDocument()">
+                            <i class="fas fa-file-upload"></i> Upload Document
+                        </button>
+                        <button class="action-btn deal-btn" onclick="createDeal()">
+                            <i class="fas fa-handshake"></i> Create Deal
+                        </button>
+                        <button class="action-btn edit-btn" onclick="editContact()">
+                            <i class="fas fa-edit"></i> Edit Contact
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteContact()">
+                            <i class="fas fa-trash"></i> Delete Contact
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Contact Grid -->
+            <div class="contact-grid">
+                <!-- Left Column -->
+                <div class="contact-left-column">
+                    <!-- Basic Information -->
+                    <section class="contact-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+                            <button class="edit-btn" onclick="editBasicInfo()">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Primary Email</label>
+                                <div class="info-value">
+                                    <a href="mailto:sarah.wilson@techcorp.com" id="primaryEmail">sarah.wilson@techcorp.com</a>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <label>Secondary Email</label>
+                                <div class="info-value" id="secondaryEmail">sarah.w@gmail.com</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Work Phone</label>
+                                <div class="info-value" id="workPhone">+1-555-0123</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Mobile Phone</label>
+                                <div class="info-value" id="mobilePhone">+1-555-0456</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Fax Number</label>
+                                <div class="info-value" id="faxNumber">+1-555-0789</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Website</label>
+                                <div class="info-value">
+                                    <a href="https://techcorp.com" target="_blank" id="websiteUrl">techcorp.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Address Information -->
+                    <section class="contact-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-map-marker-alt"></i> Address Information</h3>
+                            <button class="edit-btn" onclick="editAddressInfo()">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+                        
+                        <div class="address-tabs">
+                            <button class="address-tab active" data-tab="primary" onclick="switchAddressTab('primary')">
+                                Primary Address
+                            </button>
+                            <button class="address-tab" data-tab="billing" onclick="switchAddressTab('billing')">
+                                Billing Address
+                            </button>
+                            <button class="address-tab" data-tab="shipping" onclick="switchAddressTab('shipping')">
+                                Shipping Address
+                            </button>
+                        </div>
+                        
+                        <div class="address-content">
+                            <div class="address-pane active" id="primaryAddress">
+                                <div class="address-display">
+                                    <p>123 Technology Drive, Suite 100</p>
+                                    <p>San Francisco, CA 94105</p>
+                                    <p>United States</p>
+                                </div>
+                            </div>
+                            <div class="address-pane" id="billingAddress">
+                                <div class="address-display">
+                                    <p>Same as Primary Address</p>
+                                </div>
+                            </div>
+                            <div class="address-pane" id="shippingAddress">
+                                <div class="address-display">
+                                    <p>456 Shipping Lane</p>
+                                    <p>Oakland, CA 94601</p>
+                                    <p>United States</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Social Media Links -->
+                    <section class="contact-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-share-alt"></i> Social Media Links</h3>
+                            <button class="edit-btn" onclick="editSocialMedia()">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+                        
+                        <div class="social-links">
+                            <div class="social-item">
+                                <div class="social-icon linkedin">
+                                    <i class="fab fa-linkedin"></i>
+                                </div>
+                                <div class="social-content">
+                                    <label>LinkedIn</label>
+                                    <a href="https://linkedin.com/in/sarahwilson" target="_blank" id="linkedinProfile">
+                                        /in/sarahwilson
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="social-item">
+                                <div class="social-icon twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </div>
+                                <div class="social-content">
+                                    <label>Twitter</label>
+                                    <a href="https://twitter.com/sarahw_tech" target="_blank" id="twitterHandle">
+                                        @sarahw_tech
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="social-item">
+                                <div class="social-icon facebook">
+                                    <i class="fab fa-facebook"></i>
+                                </div>
+                                <div class="social-content">
+                                    <label>Facebook</label>
+                                    <span class="no-link" id="facebookPage">Not provided</span>
+                                </div>
+                            </div>
+                            <div class="social-item">
+                                <div class="social-icon instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <div class="social-content">
+                                    <label>Instagram</label>
+                                    <span class="no-link" id="instagramProfile">Not provided</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Insights & Analytics -->
+                    <section class="contact-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-chart-line"></i> Insights & Analytics</h3>
+                        </div>
+                        
+                        <div class="insights-grid">
+                            <div class="insight-card">
+                                <div class="insight-icon">
+                                    <i class="fas fa-fire"></i>
+                                </div>
+                                <div class="insight-content">
+                                    <div class="insight-value">85%</div>
+                                    <div class="insight-label">Engagement Score</div>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="insight-content">
+                                    <div class="insight-value">2 days</div>
+                                    <div class="insight-label">Last Contact</div>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="insight-content">
+                                    <div class="insight-value">Email</div>
+                                    <div class="insight-label">Preferred Channel</div>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="insight-content">
+                                    <div class="insight-value">High</div>
+                                    <div class="insight-label">Conversion Potential</div>
+                                </div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-icon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="insight-content">
+                                    <div class="insight-value">$45,000</div>
+                                    <div class="insight-label">Total Revenue</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Compliance & Preferences -->
+                    <section class="contact-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-shield-alt"></i> Compliance & Preferences</h3>
+                            <button class="edit-btn" onclick="editCompliance()">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+                        
+                        <div class="compliance-grid">
+                            <div class="compliance-item">
+                                <label>GDPR Consent</label>
+                                <div class="compliance-status approved">
+                                    <i class="fas fa-check-circle"></i> Approved
+                                </div>
+                            </div>
+                            <div class="compliance-item">
+                                <label>Marketing Emails</label>
+                                <div class="compliance-status opted-in">
+                                    <i class="fas fa-envelope"></i> Opted In
+                                </div>
+                            </div>
+                            <div class="compliance-item">
+                                <label>Preferred Language</label>
+                                <div class="compliance-value">English (US)</div>
+                            </div>
+                            <div class="compliance-item">
+                                <label>Timezone</label>
+                                <div class="compliance-value">PST (UTC-8)</div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column -->
+                <div class="contact-right-column">
+                    <!-- Interaction Timeline -->
+                    <section class="contact-section timeline-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-history"></i> Interaction Timeline</h3>
+                            <div class="timeline-filters">
+                                <select class="filter-select" id="timelineFilter" onchange="filterTimeline(this.value)">
+                                    <option value="all">All Activities</option>
+                                    <option value="calls">Calls</option>
+                                    <option value="emails">Emails</option>
+                                    <option value="meetings">Meetings</option>
+                                    <option value="notes">Notes</option>
+                                    <option value="tasks">Tasks</option>
+                                    <option value="documents">Documents</option>
+                                </select>
+                                <button class="btn-secondary" onclick="addTimelineActivity()">+ Add Activity</button>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-content" id="timelineContent">
+                            <div class="timeline-item call" data-id="1">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="timeline-content-body">
+                                    <div class="timeline-header">
+                                        <h4>Outbound Call</h4>
+                                        <span class="timeline-date">Today, 2:30 PM</span>
+                                    </div>
+                                    <div class="timeline-details">
+                                        <p>Duration: 15 minutes</p>
+                                        <p>Discussed Q4 budget planning and upcoming product demo requirements.</p>
+                                    </div>
+                                    <div class="timeline-actions">
+                                        <button class="timeline-action-btn" onclick="editTimelineItem(1)">Edit</button>
+                                        <button class="timeline-action-btn delete" onclick="deleteTimelineItem(1)">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item email" data-id="2">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="timeline-content-body">
+                                    <div class="timeline-header">
+                                        <h4>Email Sent</h4>
+                                        <span class="timeline-date">Yesterday, 4:15 PM</span>
+                                    </div>
+                                    <div class="timeline-details">
+                                        <p>Subject: Product Demo Proposal</p>
+                                        <p>Sent detailed proposal for upcoming product demonstration...</p>
+                                    </div>
+                                    <div class="timeline-actions">
+                                        <button class="timeline-action-btn" onclick="editTimelineItem(2)">Edit</button>
+                                        <button class="timeline-action-btn delete" onclick="deleteTimelineItem(2)">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item meeting" data-id="3">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="timeline-content-body">
+                                    <div class="timeline-header">
+                                        <h4>Meeting Scheduled</h4>
+                                        <span class="timeline-date">2 days ago</span>
+                                    </div>
+                                    <div class="timeline-details">
+                                        <p>Product Demo Meeting</p>
+                                        <p>Scheduled for Friday, 10:00 AM - Participants: Sarah Wilson, John Smith, Mike Chen</p>
+                                    </div>
+                                    <div class="timeline-actions">
+                                        <button class="timeline-action-btn" onclick="editTimelineItem(3)">Edit</button>
+                                        <button class="timeline-action-btn delete" onclick="deleteTimelineItem(3)">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-load-more">
+                            <button class="btn-secondary" onclick="loadMoreTimeline()">Load More Activities</button>
+                        </div>
+                    </section>
+
+                    <!-- Related Records -->
+                    <section class="contact-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-link"></i> Related Records</h3>
+                        </div>
+                        
+                        <div class="related-tabs">
+                            <button class="related-tab active" data-tab="deals" onclick="switchRelatedTab('deals')">
+                                Deals <span class="tab-count">3</span>
+                            </button>
+                            <button class="related-tab" data-tab="projects" onclick="switchRelatedTab('projects')">
+                                Projects <span class="tab-count">2</span>
+                            </button>
+                            <button class="related-tab" data-tab="tickets" onclick="switchRelatedTab('tickets')">
+                                Tickets <span class="tab-count">1</span>
+                            </button>
+                            <button class="related-tab" data-tab="invoices" onclick="switchRelatedTab('invoices')">
+                                Invoices <span class="tab-count">5</span>
+                            </button>
+                        </div>
+                        
+                        <div class="related-content">
+                            <div class="related-pane active" id="relatedDeals">
+                                <div class="related-item" data-id="1">
+                                    <div class="related-icon deal">
+                                        <i class="fas fa-handshake"></i>
+                                    </div>
+                                    <div class="related-info">
+                                        <h5>Enterprise Software License</h5>
+                                        <p>Value: $25,000 • Stage: Negotiation</p>
+                                        <span class="related-date">Created: 2 weeks ago</span>
+                                    </div>
+                                    <div class="related-actions">
+                                        <button class="related-action" onclick="viewDeal(1)">View</button>
+                                        <button class="related-action" onclick="editDeal(1)">Edit</button>
+                                        <button class="related-action delete" onclick="unlinkDeal(1)">Unlink</button>
+                                    </div>
+                                </div>
+                                <div class="related-item" data-id="2">
+                                    <div class="related-icon deal">
+                                        <i class="fas fa-handshake"></i>
+                                    </div>
+                                    <div class="related-info">
+                                        <h5>Training Services</h5>
+                                        <p>Value: $8,000 • Stage: Proposal</p>
+                                        <span class="related-date">Created: 1 month ago</span>
+                                    </div>
+                                    <div class="related-actions">
+                                        <button class="related-action" onclick="viewDeal(2)">View</button>
+                                        <button class="related-action" onclick="editDeal(2)">Edit</button>
+                                        <button class="related-action delete" onclick="unlinkDeal(2)">Unlink</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Internal Notes & Collaboration -->
+                    <section class="contact-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-users"></i> Internal Notes & Collaboration</h3>
+                            <button class="add-note-btn" onclick="addTeamNote()">
+                                <i class="fas fa-plus"></i> Add Note
+                            </button>
+                        </div>
+                        
+                        <div class="team-notes" id="teamNotes">
+                            <div class="team-note" data-id="1">
+                                <div class="note-author">
+                                    <img src="https://via.placeholder.com/32x32/28a745/ffffff?text=JS" alt="John Smith" class="author-avatar">
+                                    <div class="author-info">
+                                        <strong>John Smith</strong>
+                                        <span class="note-time">2 hours ago</span>
+                                    </div>
+                                </div>
+                                <div class="note-content">
+                                    <p>Great conversation today! Sarah is definitely interested in expanding their enterprise license. <span class="mention">@mike.chen</span> - can you prepare the pricing for 200+ users?</p>
+                                </div>
+                                <div class="note-actions">
+                                    <button class="note-action-btn" onclick="replyToNote(1)">Reply</button>
+                                    <button class="note-action-btn" onclick="editTeamNote(1)">Edit</button>
+                                    <button class="note-action-btn delete" onclick="deleteTeamNote(1)">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contact Form Modal (Create/Edit) -->
+    <div class="modal-overlay" id="contactFormModal" style="display: none;">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3 id="contactFormTitle">Create New Contact</h3>
+                <button class="modal-close" onclick="closeContactFormModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-tabs">
+                    <button class="form-tab active" data-tab="basic" onclick="switchFormTab('basic')">Basic Information</button>
+                    <button class="form-tab" data-tab="address" onclick="switchFormTab('address')">Address Information</button>
+                    <button class="form-tab" data-tab="social" onclick="switchFormTab('social')">Social Media</button>
+                    <button class="form-tab" data-tab="compliance" onclick="switchFormTab('compliance')">Compliance</button>
+                </div>
+
+                <div class="form-content">
+                    <!-- Basic Information Tab -->
+                    <div class="form-pane active" id="basicPane">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editFirstName">First Name <span class="required">*</span></label>
+                                <input type="text" id="editFirstName" class="form-input" required>
+                            </div>
+                            <div class="field-group">
+                                <label for="editLastName">Last Name <span class="required">*</span></label>
+                                <input type="text" id="editLastName" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editJobTitle">Job Title</label>
+                                <input type="text" id="editJobTitle" class="form-input">
+                            </div>
+                            <div class="field-group">
+                                <label for="editCompanyName">Company Name <span class="required">*</span></label>
+                                <input type="text" id="editCompanyName" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editContactOwner">Contact Owner</label>
+                                <select id="editContactOwner" class="form-select">
+                                    <option value="">Select Owner</option>
+                                    <option value="John Smith">John Smith</option>
+                                    <option value="Sarah Johnson">Sarah Johnson</option>
+                                    <option value="Mike Chen">Mike Chen</option>
+                                    <option value="Lisa Brown">Lisa Brown</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label for="editContactStatus">Contact Status <span class="required">*</span></label>
+                                <select id="editContactStatus" class="form-select" required>
+                                    <option value="">Select Status</option>
+                                    <option value="Lead">Lead</option>
+                                    <option value="Prospect">Prospect</option>
+                                    <option value="Customer">Customer</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editPrimaryEmail">Primary Email <span class="required">*</span></label>
+                                <input type="email" id="editPrimaryEmail" class="form-input" required>
+                            </div>
+                            <div class="field-group">
+                                <label for="editSecondaryEmail">Secondary Email</label>
+                                <input type="email" id="editSecondaryEmail" class="form-input">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editWorkPhone">Work Phone</label>
+                                <input type="tel" id="editWorkPhone" class="form-input">
+                            </div>
+                            <div class="field-group">
+                                <label for="editMobilePhone">Mobile Phone</label>
+                                <input type="tel" id="editMobilePhone" class="form-input">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editFaxNumber">Fax Number</label>
+                                <input type="tel" id="editFaxNumber" class="form-input">
+                            </div>
+                            <div class="field-group">
+                                <label for="editWebsite">Website</label>
+                                <input type="url" id="editWebsite" class="form-input" placeholder="https://">
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label for="editTags">Tags/Labels</label>
+                            <input type="text" id="editTags" class="form-input" placeholder="VIP, High Value, Cold Lead (comma separated)">
+                        </div>
+                    </div>
+
+                    <!-- Address Information Tab -->
+                    <div class="form-pane" id="addressPane">
+                        <h4>Primary Address</h4>
+                        <div class="field-group">
+                            <label for="editPrimaryStreet">Street Address</label>
+                            <input type="text" id="editPrimaryStreet" class="form-input">
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editPrimaryCity">City</label>
+                                <input type="text" id="editPrimaryCity" class="form-input">
+                            </div>
+                            <div class="field-group">
+                                <label for="editPrimaryState">State/Province</label>
+                                <input type="text" id="editPrimaryState" class="form-input">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editPrimaryZip">ZIP/Postal Code</label>
+                                <input type="text" id="editPrimaryZip" class="form-input">
+                            </div>
+                            <div class="field-group">
+                                <label for="editPrimaryCountry">Country</label>
+                                <select id="editPrimaryCountry" class="form-select">
+                                    <option value="">Select Country</option>
+                                    <option value="United States">United States</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="United Kingdom">United Kingdom</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="France">France</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="address-separator"></div>
+
+                        <div class="field-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="sameBillingAddress" onchange="toggleBillingAddress()">
+                                Billing address is same as primary address
+                            </label>
+                        </div>
+
+                        <div id="billingAddressFields">
+                            <h4>Billing Address</h4>
+                            <div class="field-group">
+                                <label for="editBillingStreet">Street Address</label>
+                                <input type="text" id="editBillingStreet" class="form-input">
+                            </div>
+                            <div class="field-row">
+                                <div class="field-group">
+                                    <label for="editBillingCity">City</label>
+                                    <input type="text" id="editBillingCity" class="form-input">
+                                </div>
+                                <div class="field-group">
+                                    <label for="editBillingState">State/Province</label>
+                                    <input type="text" id="editBillingState" class="form-input">
+                                </div>
+                            </div>
+                            <div class="field-row">
+                                <div class="field-group">
+                                    <label for="editBillingZip">ZIP/Postal Code</label>
+                                    <input type="text" id="editBillingZip" class="form-input">
+                                </div>
+                                <div class="field-group">
+                                    <label for="editBillingCountry">Country</label>
+                                    <select id="editBillingCountry" class="form-select">
+                                        <option value="">Select Country</option>
+                                        <option value="United States">United States</option>
+                                        <option value="Canada">Canada</option>
+                                        <option value="United Kingdom">United Kingdom</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Tab -->
+                    <div class="form-pane" id="socialPane">
+                        <div class="field-group">
+                            <label for="editLinkedin">LinkedIn Profile</label>
+                            <input type="url" id="editLinkedin" class="form-input" placeholder="https://linkedin.com/in/username">
+                        </div>
+                        <div class="field-group">
+                            <label for="editTwitter">Twitter Handle</label>
+                            <input type="url" id="editTwitter" class="form-input" placeholder="https://twitter.com/username">
+                        </div>
+                        <div class="field-group">
+                            <label for="editFacebook">Facebook Page</label>
+                            <input type="url" id="editFacebook" class="form-input" placeholder="https://facebook.com/username">
+                        </div>
+                        <div class="field-group">
+                            <label for="editInstagram">Instagram Profile</label>
+                            <input type="url" id="editInstagram" class="form-input" placeholder="https://instagram.com/username">
+                        </div>
+                    </div>
+
+                    <!-- Compliance Tab -->
+                    <div class="form-pane" id="compliancePane">
+                        <div class="field-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="editGdprConsent">
+                                GDPR/Privacy Consent Approved
+                            </label>
+                        </div>
+                        <div class="field-group checkbox-group">
+                            <label>
+                                <input type="checkbox" id="editMarketingOptIn">
+                                Opted in for marketing emails
+                            </label>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label for="editPreferredLanguage">Preferred Language</label>
+                                <select id="editPreferredLanguage" class="form-select">
+                                    <option value="English (US)">English (US)</option>
+                                    <option value="English (UK)">English (UK)</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="French">French</option>
+                                    <option value="German">German</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label for="editTimezone">Timezone</label>
+                                <select id="editTimezone" class="form-select">
+                                    <option value="PST (UTC-8)">PST (UTC-8)</option>
+                                    <option value="MST (UTC-7)">MST (UTC-7)</option>
+                                    <option value="CST (UTC-6)">CST (UTC-6)</option>
+                                    <option value="EST (UTC-5)">EST (UTC-5)</option>
+                                    <option value="GMT (UTC+0)">GMT (UTC+0)</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveContact()">Save Contact</button>
+                <button class="btn-secondary" onclick="closeContactFormModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Note Modal -->
+    <div class="modal-overlay" id="addNoteModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Note</h3>
+                <button class="modal-close" onclick="closeAddNoteModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="field-group">
+                    <label for="noteType">Note Type</label>
+                    <select id="noteType" class="form-select">
+                        <option value="general">General Note</option>
+                        <option value="call">Call Summary</option>
+                        <option value="meeting">Meeting Notes</option>
+                        <option value="follow-up">Follow-up Required</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label for="noteContent">Note Content</label>
+                    <textarea id="noteContent" class="form-textarea" rows="5" placeholder="Enter your note..."></textarea>
+                </div>
+                <div class="field-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="notifyTeam"> Notify team members
+                    </label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveNote()">Save Note</button>
+                <button class="btn-secondary" onclick="closeAddNoteModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline Activity Modal -->
+    <div class="modal-overlay" id="timelineActivityModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="timelineActivityTitle">Add Activity</h3>
+                <button class="modal-close" onclick="closeTimelineActivityModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="field-row">
+                    <div class="field-group">
+                        <label for="activityType">Activity Type</label>
+                        <select id="activityType" class="form-select">
+                            <option value="call">Call</option>
+                            <option value="email">Email</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="note">Note</option>
+                            <option value="task">Task</option>
+                            <option value="document">Document</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="activityDate">Date & Time</label>
+                        <input type="datetime-local" id="activityDate" class="form-input">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label for="activityTitle">Title</label>
+                    <input type="text" id="activityTitle" class="form-input" placeholder="Activity title">
+                </div>
+                <div class="field-group">
+                    <label for="activityDescription">Description</label>
+                    <textarea id="activityDescription" class="form-textarea" rows="4" placeholder="Activity details..."></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveTimelineActivity()">Save Activity</button>
+                <button class="btn-secondary" onclick="closeTimelineActivityModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Deletion</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this <span id="deleteType">contact</span>?</p>
+                <p><strong id="deleteItemName"></strong></p>
+                <p class="warning-text">This action cannot be undone.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-danger" onclick="confirmDelete()">Delete</button>
+                <button class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="contact.js"></script>
+</body>
+</html>
